@@ -25,7 +25,7 @@ import com.lhy.tools.Tools;
  * @author lhy
  *
  */
-public class SSLFactory implements getSSLSocket {
+public class SSLFactory implements GetSSLSocket {
 
 	private int PORT;
 	private SSLSocket ssl;
@@ -52,17 +52,22 @@ public class SSLFactory implements getSSLSocket {
 			ssl.connect(new InetSocketAddress(Tools.SERVERIP, PORT),
 					Tools.TIMEOUTOUTGFW);
 		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 			return null;
 		} catch (CertificateException e) {
+			e.printStackTrace();
 			return null;
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		} catch (KeyManagementException e) {
+			e.printStackTrace();
 			return null;
 		} catch (KeyStoreException e) {
+			e.printStackTrace();
 			return null;
 		}
 		return ssl;

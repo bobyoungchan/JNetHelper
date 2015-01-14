@@ -44,7 +44,6 @@ public class PipeCHTInGFW implements Runnable {
 		}
 	}
 
-	// 对http请求进行判断和进行修改
 	private void get_real_head(byte[] _bt, int _index) {
 		String head = new String(_bt, 0, _index);
 		String line1, totle_head, new_last, ori_host, change_last, change_line = "";
