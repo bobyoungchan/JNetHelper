@@ -7,15 +7,18 @@ public class Tools {
 	private static Prop prop = new Prop();
 	private static Sleep sleep = new Sleep();
 	private static Flags flags = new Flags();
-	private static HeaderHandle handle = new HeaderHandle();
 	public static final int LOCALPORT = Integer.parseInt(getProp().getProperty(
 			"LOCALPORT"));
 	public static final int TIMEOUTINGFW = Integer.parseInt(getProp()
 			.getProperty("TIMEOUTINGFW"));
-
-	public static String[] getChangedHeader(String header) {
-		return handle.getChangedHeader(header);
-	}
+	public static final int TIMEOUTOUTGFW = Integer.parseInt(getProp()
+			.getProperty("TIMEOUTOUTGFW"));
+	public static final String SERVERIP = getProp().getProperty("SERVERIP");
+	public static final int SERVERPORTSTART = Integer.parseInt(getProp()
+			.getProperty("SERVERPORTSTART"));
+	public static final int SERVERPORTCOUNT = Integer.parseInt(getProp()
+			.getProperty("SERVERPORTCOUNT"));
+	public static final String CERPATH = getProp().getProperty("CERPATH");
 
 	public static Properties getProp() {
 		return prop.getProp();

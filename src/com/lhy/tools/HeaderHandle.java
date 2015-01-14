@@ -9,7 +9,7 @@ public class HeaderHandle {
 	private boolean add;
 	private String all, head, str, host, kind, host_last, _index;
 
-	HeaderHandle() {
+	public HeaderHandle() {
 		port = 80;
 		add = false;
 		all = str = head = host = kind = _index = host_last = "";
@@ -62,12 +62,12 @@ public class HeaderHandle {
 	private void get_host_port() {
 		int n_1 = all.indexOf("\r\n");
 		if (n_1 != -1) {
-			int line_num = 0;
-			while (line_num < all.split("\r\n").length) {
+//			int line_num = 0;
+//			while (line_num < all.split("\r\n").length) {
 				str = (all.split("\r\n")[0]);
-				if (str.indexOf("HTTP/1.") != -1)
-					break;
-			}
+//				if (str.indexOf("HTTP/1.") != -1)
+//					break;
+//			}
 		}
 		if ((str != null) && (str.indexOf(" ") != -1)) {
 			head = str.split(" ")[0];

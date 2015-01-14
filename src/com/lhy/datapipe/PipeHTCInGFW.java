@@ -27,11 +27,11 @@ public class PipeHTCInGFW implements Runnable {
 		try {
 			tar_os = tar_socket.getOutputStream();
 			tar_is = tar_socket.getInputStream();
+			startCTH();
+			startHTC();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		startCTH();
-		startHTC();
 	}
 
 	private void startHTC() {
