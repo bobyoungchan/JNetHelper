@@ -50,28 +50,23 @@ public class Socks5 implements Runnable {
 		}
 	}
 
-	private byte[] Request(int len) {
-		byte[] bt = new byte[7 + len];
-		for (int i = 0; i < bt.length; i++)
-			bt[i] = buffer[i];
-		return bt;
-	}
-
 	private void visitOutGFW() {
 		int retry = 5;
 		while (retry > 0) {
 			retry--;
 			SSLFactory ssl = new SSLFactory();
 			SSLSocket socket = ssl.getInstance();
-			if (socket != null) {
-				new Thread(new PipeHTCInGFW(ori_is, ori_os, socket,
-						Request(len), true)).start();
+			if (socket.isConnected() && socket != null) {
+				Thread t = new Thread(new PipeHTCInGFW(ori_is, ori_os, socket,
+						buffer, 7 + len, true));
+				t.setPriority(Thread.MAX_PRIORITY);
+				t.start();
 				break;
 			}
 		}
 	}
 
-	public void visitInGFW() {
+	private void visitInGFW() {
 		int port = findPort(buffer, 5 + len, 6 + len);
 		String ip = new String(buffer, 5, len);
 		Socket socket = null;
@@ -85,8 +80,10 @@ public class Socks5 implements Runnable {
 				if (socket.isConnected() && socket != null) {
 					isConn = true;
 					write(Tools.getConnectOK());
-					new Thread(new PipeHTCInGFW(ori_is, ori_os, socket, false))
-							.start();
+					Thread t = new Thread(new PipeHTCInGFW(ori_is, ori_os,
+							socket, false));
+					t.setPriority(Thread.MAX_PRIORITY);
+					t.start();
 					break;
 				}
 			}

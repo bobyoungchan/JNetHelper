@@ -8,11 +8,12 @@ import java.net.Socket;
 import javax.net.ssl.SSLSocket;
 
 public class PipeHTCInGFW implements Runnable {
-	OutputStream ori_os, tar_os;
-	InputStream ori_is, tar_is;
-	Socket tar_socket;
-	boolean isOut;
-	byte[] buffer;
+	private OutputStream ori_os, tar_os;
+	private InputStream ori_is, tar_is;
+	private Socket tar_socket;
+	private int request_len;
+	private boolean isOut;
+	private byte[] buffer;
 
 	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
 			Socket tar_socket, boolean isOut) {
@@ -23,12 +24,13 @@ public class PipeHTCInGFW implements Runnable {
 	}
 
 	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
-			SSLSocket tar_socket, byte[] buffer, boolean isOut) {
+			SSLSocket tar_socket, byte[] buffer, int request_len, boolean isOut) {
 		this.isOut = isOut;
 		this.ori_os = ori_os;
 		this.ori_is = ori_is;
 		this.buffer = buffer;
 		this.tar_socket = tar_socket;
+		this.request_len = request_len;
 	}
 
 	@Override
@@ -36,8 +38,8 @@ public class PipeHTCInGFW implements Runnable {
 		try {
 			tar_os = tar_socket.getOutputStream();
 			tar_is = tar_socket.getInputStream();
-			if (isOut) {
-				tar_os.write(buffer);
+			if (isOut){
+				tar_os.write(buffer, 0, request_len);
 				tar_os.flush();
 			}
 			startCTH();
@@ -54,6 +56,7 @@ public class PipeHTCInGFW implements Runnable {
 			try {
 				if ((index = tar_is.read(bt, 0, bt.length)) > 0) {
 					ori_os.write(bt, 0, index);
+					ori_os.flush();
 					if (tar_is.available() < 0)
 						break;
 				} else if (index <= 0) {

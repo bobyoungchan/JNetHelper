@@ -23,6 +23,7 @@ public class PipeCTHInGFW implements Runnable {
 			try {
 				if ((index = ori_is.read(bt, 0, bt.length)) > 0) {
 					tar_os.write(bt, 0, index);
+					tar_os.flush();
 					if (ori_is.available() < 0)
 						break;
 				} else if (index <= 0) {
