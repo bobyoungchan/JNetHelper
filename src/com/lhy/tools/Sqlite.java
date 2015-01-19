@@ -11,8 +11,8 @@ public class Sqlite {
 
 	public Sqlite() {
 		try {
-			Class.forName(Tools.DRIVER);
-			conn = DriverManager.getConnection(Tools.URL);
+			Class.forName(Tools.getSqlDriver());
+			conn = DriverManager.getConnection(Tools.getSqlURL());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

@@ -41,7 +41,7 @@ public class SSLFactory implements GetSSLSocket {
 		TrustManagerFactory tmf = null;
 		try {
 			ts = KeyStore.getInstance("JKS");
-			ts.load(new FileInputStream(Tools.CERPATH), password);
+			ts.load(new FileInputStream(Tools.getCerPath()), password);
 			tmf = TrustManagerFactory.getInstance("SunX509");
 			tmf.init(ts);
 			TrustManager[] tm = tmf.getTrustManagers();
@@ -49,8 +49,8 @@ public class SSLFactory implements GetSSLSocket {
 			context.init(null, tm, null);
 			SSLSocketFactory ssf = context.getSocketFactory();
 			ssl = (SSLSocket) ssf.createSocket();
-			ssl.connect(new InetSocketAddress(Tools.SERVERIP, PORT),
-					Tools.TIMEOUTOUTGFW);
+			ssl.connect(new InetSocketAddress(Tools.getServerIP(), PORT),
+					Tools.getTimeOutOutGFW());
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return null;
@@ -78,8 +78,8 @@ public class SSLFactory implements GetSSLSocket {
 	 */
 	@Override
 	public SSLSocket getInstance() {
-		return new SSLFactory().getSocket(new Random()
-				.nextInt(Tools.SERVERPORTCOUNT) + Tools.SERVERPORTSTART);
+		return new SSLFactory().getSocket(new Random().nextInt(Tools
+				.getServerPortCount()) + Tools.getServerPortStart());
 	}
 
 	private SSLSocket getSocket(int PORT) {

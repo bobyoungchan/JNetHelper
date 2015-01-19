@@ -28,7 +28,7 @@ public class IsInGFW implements Runnable {
 				times--;
 				Socket tar_socket = new Socket();
 				tar_socket.connect(new InetSocketAddress(host, port),
-						Tools.ISINGFW);
+						Tools.getIsInGFW());
 				connected++;
 				tar_socket.close();
 			} catch (IOException e) {

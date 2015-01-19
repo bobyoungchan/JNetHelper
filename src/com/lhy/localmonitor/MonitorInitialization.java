@@ -17,7 +17,7 @@ public class MonitorInitialization {
 
 	private void initialization() {
 		try {
-			server = new ServerSocket(Tools.LOCALPORT);
+			server = new ServerSocket(Tools.getLocalPort());
 			t = new Thread(new MonitorWorker(server));
 			t.setPriority(Thread.MAX_PRIORITY);
 		} catch (IOException e) {

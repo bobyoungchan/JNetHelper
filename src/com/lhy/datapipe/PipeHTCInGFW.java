@@ -5,20 +5,29 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class PipeHTCInGFW implements Runnable {
+import javax.net.ssl.SSLSocket;
 
-	String head;
-	String changedheader;
+public class PipeHTCInGFW implements Runnable {
 	OutputStream ori_os, tar_os;
 	InputStream ori_is, tar_is;
 	Socket tar_socket;
+	boolean isOut;
+	byte[] buffer;
 
-	public PipeHTCInGFW(String head, String changedheader, InputStream ori_is,
-			OutputStream ori_os, Socket tar_socket) {
-		this.head = head;
-		this.changedheader = changedheader;
+	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
+			Socket tar_socket, boolean isOut) {
+		this.isOut = isOut;
 		this.ori_os = ori_os;
 		this.ori_is = ori_is;
+		this.tar_socket = tar_socket;
+	}
+
+	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
+			SSLSocket tar_socket, byte[] buffer, boolean isOut) {
+		this.isOut = isOut;
+		this.ori_os = ori_os;
+		this.ori_is = ori_is;
+		this.buffer = buffer;
 		this.tar_socket = tar_socket;
 	}
 
@@ -27,6 +36,10 @@ public class PipeHTCInGFW implements Runnable {
 		try {
 			tar_os = tar_socket.getOutputStream();
 			tar_is = tar_socket.getInputStream();
+			if (isOut) {
+				tar_os.write(buffer);
+				tar_os.flush();
+			}
 			startCTH();
 			startHTC();
 		} catch (IOException e) {
@@ -58,53 +71,9 @@ public class PipeHTCInGFW implements Runnable {
 	}
 
 	private void startCTH() {
-		try {
-			if (head.equalsIgnoreCase("CONNECT")) {
-				ori_os.write((("HTTP/1.1 200 OK\r\n\r\n")).getBytes());
-				startHTTPS();
-			} else {
-				tar_os.write(changedheader.getBytes());
-				startHTTP();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void startHTTP() {
-		try {
-			Thread t = new Thread(new PipeCHTInGFW(ori_is,
-					tar_socket.getOutputStream(), false));
-			t.setPriority(Thread.MAX_PRIORITY);
-			t.start();
-		} catch (IOException e) {
-			try {
-				tar_socket.close();
-				ori_is.close();
-				ori_os.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		}
-	}
-
-	private void startHTTPS() {
-		try {
-			Thread t = new Thread(new PipeCHTInGFW(ori_is,
-					tar_socket.getOutputStream(), true));
-			t.setPriority(Thread.MAX_PRIORITY);
-			t.start();
-		} catch (IOException e) {
-			try {
-				tar_socket.close();
-				ori_is.close();
-				ori_os.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		}
+		Thread t = new Thread(new PipeCTHInGFW(ori_is, tar_os));
+		t.setPriority(Thread.MAX_PRIORITY);
+		t.start();
 	}
 
 }
