@@ -29,10 +29,6 @@ public class NewRequest implements Runnable {
 				Thread t = new Thread(new Socks5(ori_is, ori_os));
 				t.setPriority(Thread.MAX_PRIORITY);
 				t.start();
-			} else {
-				Thread t = new Thread(new Socks4(ori_is, ori_os));
-				t.setPriority(Thread.MAX_PRIORITY);
-				t.start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

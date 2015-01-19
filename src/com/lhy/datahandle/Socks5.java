@@ -5,39 +5,74 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.SQLException;
 
 import javax.net.ssl.SSLSocket;
 
-import com.lhy.datapipe.PipeHTCInGFW;
+import com.lhy.datapipe.PipeHTC;
 import com.lhy.ssl.SSLFactory;
 import com.lhy.tools.Tools;
 
 public class Socks5 implements Runnable {
 
-	InputStream ori_is;
-	OutputStream ori_os;
-	boolean isConn;
+	private InputStream ori_is;
+	private OutputStream ori_os;
+	private boolean isConn, isInDB;
 	private int len;
+	private String host;
+	private int port;
 	private int head = 5;
 	private byte[] buffer = new byte[1024];
 
 	public Socks5(InputStream ori_is, OutputStream ori_os) {
 		this.ori_is = ori_is;
 		this.ori_os = ori_os;
-		isConn = false;
+		isConn = isInDB = false;
 	}
 
 	@Override
 	public void run() {
 		getRequest();
-		visitInGFW();
-		if (!isConn)
-			visitOutGFW();
+		getHost();
+		autoSwitch();
+	}
+
+	private void autoSwitch() {
+		try {
+			if (Tools.getSql().executeQuery(Tools.isOutGFW(host)).next()) {
+				isInDB = true;
+				visitOutGFW();
+			} else if (Tools.getSql().executeQuery(Tools.isInGFW(host)).next()) {
+				isInDB = true;
+				visitInGFW(Tools.getVisitInGFW());
+			}
+			if (!isConn) {
+				visitInGFW(Tools.getTestInGFW());
+				if (!isConn)
+					visitOutGFW();
+				if (!isInDB) {
+					if (!Tools.getArray().contains(host)) {
+						System.out.println("无重复 " + Tools.getArray().size());
+						Thread t = new Thread(new IsInGFW(host, port));
+						t.setPriority(Thread.MAX_PRIORITY);
+						t.start();
+					}else
+						System.out.println("重复 " + Tools.getArray().size());
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getHost() {
+		host = new String(buffer, 5, len);
+		port = findPort(buffer, 5 + len, 6 + len);
 	}
 
 	private void getRequest() {
 		try {
-			write(Tools.getAccept());
+			write(Tools.getAccepted5());
 			for (int i = 0; i < head; i++) {
 				buffer[i] = (byte) ori_is.read();
 			}
@@ -57,7 +92,8 @@ public class Socks5 implements Runnable {
 			SSLFactory ssl = new SSLFactory();
 			SSLSocket socket = ssl.getInstance();
 			if (socket.isConnected() && socket != null) {
-				Thread t = new Thread(new PipeHTCInGFW(ori_is, ori_os, socket,
+				isConn = true;
+				Thread t = new Thread(new PipeHTC(ori_is, ori_os, socket,
 						buffer, 7 + len, true));
 				t.setPriority(Thread.MAX_PRIORITY);
 				t.start();
@@ -66,22 +102,19 @@ public class Socks5 implements Runnable {
 		}
 	}
 
-	private void visitInGFW() {
-		int port = findPort(buffer, 5 + len, 6 + len);
-		String ip = new String(buffer, 5, len);
+	private void visitInGFW(int time) {
 		Socket socket = null;
 		int retry = 5;
 		try {
 			while (retry > 0) {
 				retry--;
 				socket = new Socket();
-				socket.connect(new InetSocketAddress(ip, port),
-						Tools.getTestInGFW());
+				socket.connect(new InetSocketAddress(host, port), time);
 				if (socket.isConnected() && socket != null) {
 					isConn = true;
 					write(Tools.getConnectOK());
-					Thread t = new Thread(new PipeHTCInGFW(ori_is, ori_os,
-							socket, false));
+					Thread t = new Thread(new PipeHTC(ori_is, ori_os, socket,
+							false));
 					t.setPriority(Thread.MAX_PRIORITY);
 					t.start();
 					break;

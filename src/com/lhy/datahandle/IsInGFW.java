@@ -14,10 +14,10 @@ public class IsInGFW implements Runnable {
 	private int times;
 	private int connected, disconnected;
 
-	public IsInGFW(String host, String port) {
+	public IsInGFW(String host, int port) {
 		times = 9;
 		this.host = host;
-		this.port = Integer.parseInt(port);
+		this.port = port;
 		connected = disconnected = 0;
 	}
 
@@ -40,12 +40,19 @@ public class IsInGFW implements Runnable {
 
 	private void dbOpr() {
 		try {
-			if (disconnected < connected)
-				Tools.getSql().execute(Tools.putInGFW(host));
-			else
+			if (disconnected < connected) {
+				if (!Tools.getSql().executeQuery(Tools.isInGFW(host)).next()
+						&& !Tools.getSql().executeQuery(Tools.isOutGFW(host))
+								.next())
+					Tools.getSql().execute(Tools.putInGFW(host));
+			} else if (!Tools.getSql().executeQuery(Tools.isInGFW(host)).next()
+					&& !Tools.getSql().executeQuery(Tools.isOutGFW(host))
+							.next())
 				Tools.getSql().execute(Tools.putOutGFW(host));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		Tools.getArray().remove(host);
+		System.out.println("已移除 " + Tools.getArray().size());
 	}
 }

@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class PipeCTHInGFW implements Runnable {
+public class PipeCTH implements Runnable {
 
 	InputStream ori_is;
 	OutputStream tar_os;
 
-	public PipeCTHInGFW(InputStream ori_is, OutputStream tar_os) {
+	public PipeCTH(InputStream ori_is, OutputStream tar_os) {
 		this.ori_is = ori_is;
 		this.tar_os = tar_os;
 	}

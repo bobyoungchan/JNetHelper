@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import javax.net.ssl.SSLSocket;
 
-public class PipeHTCInGFW implements Runnable {
+public class PipeHTC implements Runnable {
 	private OutputStream ori_os, tar_os;
 	private InputStream ori_is, tar_is;
 	private Socket tar_socket;
@@ -15,7 +15,7 @@ public class PipeHTCInGFW implements Runnable {
 	private boolean isOut;
 	private byte[] buffer;
 
-	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
+	public PipeHTC(InputStream ori_is, OutputStream ori_os,
 			Socket tar_socket, boolean isOut) {
 		this.isOut = isOut;
 		this.ori_os = ori_os;
@@ -23,7 +23,7 @@ public class PipeHTCInGFW implements Runnable {
 		this.tar_socket = tar_socket;
 	}
 
-	public PipeHTCInGFW(InputStream ori_is, OutputStream ori_os,
+	public PipeHTC(InputStream ori_is, OutputStream ori_os,
 			SSLSocket tar_socket, byte[] buffer, int request_len, boolean isOut) {
 		this.isOut = isOut;
 		this.ori_os = ori_os;
@@ -74,7 +74,7 @@ public class PipeHTCInGFW implements Runnable {
 	}
 
 	private void startCTH() {
-		Thread t = new Thread(new PipeCTHInGFW(ori_is, tar_os));
+		Thread t = new Thread(new PipeCTH(ori_is, tar_os));
 		t.setPriority(Thread.MAX_PRIORITY);
 		t.start();
 	}
