@@ -28,7 +28,8 @@ public class DBquery {
 
 	private String getHost(String host) {
 		if (!host
-				.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}"))
+				.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}")
+				&& host.split("\\.").length >= 2)
 			host = host.split("\\.")[host.split("\\.").length - 2];
 		return host;
 	}

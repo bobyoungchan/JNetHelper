@@ -52,22 +52,16 @@ public class SSLFactory implements GetSSLSocket {
 			ssl.connect(new InetSocketAddress(Tools.getServerIP(), PORT),
 					Tools.getTimeOutOutGFW());
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
 			return null;
 		} catch (CertificateException e) {
-			e.printStackTrace();
 			return null;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		} catch (KeyManagementException e) {
-			e.printStackTrace();
 			return null;
 		} catch (KeyStoreException e) {
-			e.printStackTrace();
 			return null;
 		}
 		return ssl;

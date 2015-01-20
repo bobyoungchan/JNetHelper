@@ -52,12 +52,11 @@ public class Socks5 implements Runnable {
 					visitOutGFW();
 				if (!isInDB) {
 					if (!Tools.getArray().contains(host)) {
-						System.out.println("无重复 " + Tools.getArray().size());
+						Tools.getArray().add(host);
 						Thread t = new Thread(new IsInGFW(host, port));
 						t.setPriority(Thread.MAX_PRIORITY);
 						t.start();
-					}else
-						System.out.println("重复 " + Tools.getArray().size());
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -91,7 +90,7 @@ public class Socks5 implements Runnable {
 			retry--;
 			SSLFactory ssl = new SSLFactory();
 			SSLSocket socket = ssl.getInstance();
-			if (socket.isConnected() && socket != null) {
+			if (socket != null && socket.isConnected()) {
 				isConn = true;
 				Thread t = new Thread(new PipeHTC(ori_is, ori_os, socket,
 						buffer, 7 + len, true));

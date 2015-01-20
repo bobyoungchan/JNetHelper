@@ -53,6 +53,5 @@ public class IsInGFW implements Runnable {
 			e.printStackTrace();
 		}
 		Tools.getArray().remove(host);
-		System.out.println("已移除 " + Tools.getArray().size());
 	}
 }

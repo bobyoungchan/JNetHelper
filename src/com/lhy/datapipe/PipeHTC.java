@@ -7,6 +7,8 @@ import java.net.Socket;
 
 import javax.net.ssl.SSLSocket;
 
+import com.lhy.tools.Tools;
+
 public class PipeHTC implements Runnable {
 	private OutputStream ori_os, tar_os;
 	private InputStream ori_is, tar_is;
@@ -15,8 +17,8 @@ public class PipeHTC implements Runnable {
 	private boolean isOut;
 	private byte[] buffer;
 
-	public PipeHTC(InputStream ori_is, OutputStream ori_os,
-			Socket tar_socket, boolean isOut) {
+	public PipeHTC(InputStream ori_is, OutputStream ori_os, Socket tar_socket,
+			boolean isOut) {
 		this.isOut = isOut;
 		this.ori_os = ori_os;
 		this.ori_is = ori_is;
@@ -38,7 +40,7 @@ public class PipeHTC implements Runnable {
 		try {
 			tar_os = tar_socket.getOutputStream();
 			tar_is = tar_socket.getInputStream();
-			if (isOut){
+			if (isOut) {
 				tar_os.write(buffer, 0, request_len);
 				tar_os.flush();
 			}
@@ -51,6 +53,7 @@ public class PipeHTC implements Runnable {
 
 	private void startHTC() {
 		int index = 0;
+		Tools.countPlus();
 		byte[] bt = new byte[1024];
 		while (true) {
 			try {
@@ -69,6 +72,7 @@ public class PipeHTC implements Runnable {
 		try {
 			ori_os.close();
 			tar_is.close();
+			Tools.countCut();
 		} catch (IOException e) {
 		}
 	}

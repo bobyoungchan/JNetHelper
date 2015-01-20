@@ -4,7 +4,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 public class Tools {
+
+	private static int ThreadCount = 0;
 
 	private static Prop prop = new Prop();
 
@@ -12,9 +17,21 @@ public class Tools {
 
 	private static Flags flags = new Flags();
 
+	private static boolean autoSwitch = true;
+
 	private static DBquery query = new DBquery();
 
 	private static final int RETRY = 5;
+
+	private static JTextArea ta = new JTextArea();
+
+	private static JTextField upload = new JTextField();
+
+	private static JTextField download = new JTextField();
+
+	private static JTextField delayed = new JTextField();
+
+	private static JTextField count = new JTextField();
 
 	private static ArrayList<String> array = new ArrayList<String>();
 
@@ -157,6 +174,46 @@ public class Tools {
 
 	public synchronized static String delInGFW(String host) {
 		return query.delInGFW(host);
+	}
+
+	public synchronized static void countPlus() {
+		ThreadCount++;
+	}
+
+	public synchronized static void countCut() {
+		ThreadCount--;
+	}
+
+	public static int getThreadCount() {
+		return ThreadCount;
+	}
+
+	public static JTextArea getTA() {
+		return ta;
+	}
+
+	public static JTextField getUpload() {
+		return upload;
+	}
+
+	public static JTextField getDownload() {
+		return download;
+	}
+
+	public static JTextField getDelayed() {
+		return delayed;
+	}
+
+	public static JTextField getCount() {
+		return count;
+	}
+
+	public static void setAutoSwitch(boolean auto) {
+		autoSwitch = auto;
+	}
+
+	public static boolean getAutoSwitch() {
+		return autoSwitch;
 	}
 
 }
