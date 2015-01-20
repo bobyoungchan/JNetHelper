@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.lhy.tools.Tools;
+
 public class PipeCTH implements Runnable {
 
 	InputStream ori_is;
@@ -22,6 +24,7 @@ public class PipeCTH implements Runnable {
 		while (true) {
 			try {
 				if ((index = ori_is.read(bt, 0, bt.length)) > 0) {
+					Tools.setUpspeed(index);
 					tar_os.write(bt, 0, index);
 					tar_os.flush();
 					if (ori_is.available() < 0)

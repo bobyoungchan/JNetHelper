@@ -38,7 +38,7 @@ public class DefaultJFrame {
 	public DefaultJFrame() {
 
 		f1 = new JFrame("JNetHelper");
-		f1.setSize(500, 200);
+		f1.setSize(535, 215);
 		f1.setLocationRelativeTo(null);
 		f1.setResizable(false);
 		f1.setLayout(new BorderLayout());
@@ -65,19 +65,19 @@ public class DefaultJFrame {
 		}
 
 		upload = Tools.getUpload();
-		upload.setText("  上行速度：0 Kb/s");
+		upload.setText("上行速度:0 Kb/s");
 		upload.setFont(new java.awt.Font("Dialog", 1, 12));
 		upload.setForeground(Color.BLUE);
 		upload.setEditable(false);
 
 		download = Tools.getDownload();
-		download.setText("  下行速度：0 Kb/s");
+		download.setText("下行速度:0 Kb/s");
 		download.setFont(new java.awt.Font("Dialog", 1, 12));
 		download.setForeground(Color.BLUE);
 		download.setEditable(false);
 
 		count = Tools.getCount();
-		count.setText("  工作线程：0 ");
+		count.setText("  当前工作线程数:0 ");
 		count.setFont(new java.awt.Font("Dialog", 1, 12));
 		count.setForeground(Color.BLUE);
 		count.setEditable(false);

@@ -34,7 +34,10 @@ public class Socks5 implements Runnable {
 	public void run() {
 		getRequest();
 		getHost();
-		autoSwitch();
+		if (Tools.getAutoSwitch()) {
+			autoSwitch();
+		} else
+			visitOutGFW();
 	}
 
 	private void autoSwitch() {
@@ -80,7 +83,6 @@ public class Socks5 implements Runnable {
 				buffer[5 + i] = (byte) ori_is.read();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -92,6 +94,7 @@ public class Socks5 implements Runnable {
 			SSLSocket socket = ssl.getInstance();
 			if (socket != null && socket.isConnected()) {
 				isConn = true;
+				Tools.setTa("Host:" + host + " Port:" + socket.getPort());
 				Thread t = new Thread(new PipeHTC(ori_is, ori_os, socket,
 						buffer, 7 + len, true));
 				t.setPriority(Thread.MAX_PRIORITY);
@@ -111,6 +114,7 @@ public class Socks5 implements Runnable {
 				socket.connect(new InetSocketAddress(host, port), time);
 				if (socket.isConnected() && socket != null) {
 					isConn = true;
+					Tools.setTa("Host:" + host + " Port:" + port);
 					write(Tools.getConnectOK());
 					Thread t = new Thread(new PipeHTC(ori_is, ori_os, socket,
 							false));

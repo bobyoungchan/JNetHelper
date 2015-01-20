@@ -17,7 +17,6 @@ public class Delayed implements Runnable {
 	InputStream is;
 	OutputStream os;
 	JTextField tf;
-	public static boolean conn = false;
 
 	public Delayed() {
 		this.tf = Tools.getDelayed();
@@ -45,11 +44,11 @@ public class Delayed implements Runnable {
 					tf.setForeground(Color.orange);
 				else
 					tf.setForeground(Color.red);
-				tf.setText("  延迟: " + ms + " ms");
+				tf.setText("    延迟: " + ms + " ms");
 			} catch (IOException e) {
 				tf.setForeground(Color.red);
-				tf.setText("  网络异常");
-				conn = false;
+				tf.setText("    网络异常");
+				Tools.setConnected(false);
 				Tools.sleep(1000);
 				connect();
 			}
@@ -64,19 +63,16 @@ public class Delayed implements Runnable {
 			s.setSoTimeout(10000);
 			is = s.getInputStream();
 			os = s.getOutputStream();
-			conn = true;
+			Tools.setConnected(true);
 		} catch (IOException e) {
 			try {
 				s.close();
+				Tools.setConnected(false);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 			Tools.sleep(1000);
 			connect();
 		}
-	}
-
-	public static boolean get_boolean() {
-		return conn;
 	}
 }

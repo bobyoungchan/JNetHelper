@@ -58,6 +58,7 @@ public class PipeHTC implements Runnable {
 		while (true) {
 			try {
 				if ((index = tar_is.read(bt, 0, bt.length)) > 0) {
+					Tools.setDownspeed(index);
 					ori_os.write(bt, 0, index);
 					ori_os.flush();
 					if (tar_is.available() < 0)

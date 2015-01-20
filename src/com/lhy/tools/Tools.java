@@ -9,15 +9,23 @@ import javax.swing.JTextField;
 
 public class Tools {
 
+	private static long upspeed = 0;
+
+	private static long downspeed = 0;
+
 	private static int ThreadCount = 0;
 
 	private static Prop prop = new Prop();
+
+	private static Time time = new Time();
 
 	private static Sleep sleep = new Sleep();
 
 	private static Flags flags = new Flags();
 
 	private static boolean autoSwitch = true;
+
+	private static boolean connected = false;
 
 	private static DBquery query = new DBquery();
 
@@ -216,4 +224,38 @@ public class Tools {
 		return autoSwitch;
 	}
 
+	public static void setConnected(boolean con) {
+		connected = con;
+	}
+
+	public static boolean getConnected() {
+		return connected;
+	}
+
+	public static long getUpspeed() {
+		return upspeed;
+	}
+
+	public static long getDownspeed() {
+		return downspeed;
+	}
+
+	public synchronized static void setUpspeed(long speed) {
+		upspeed += speed;
+	}
+
+	public synchronized static void setDownspeed(long speed) {
+		downspeed += speed;
+	}
+
+	public static void resetSpeed() {
+		downspeed = upspeed = 0;
+	}
+
+	public synchronized static void setTa(String str) {
+		if (ta.getText().length() > 1000)
+			ta.setText("");
+		ta.setText(ta.getText() + time.getTime() + " " + str + "\r\n");
+		ta.setCaretPosition(ta.getText().length());
+	}
 }
