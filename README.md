@@ -7,6 +7,8 @@ JNetHelper
 
 自带SQLite数据库，判断走墙内还是墙外线路。
 
+服务器完成分布式部署，添加反向代理，负载均衡。
+
 火狐用户请在高级设置中选择socks5代理，ip 127.0.0.1 port 10802 勾选远程DNS。
 
 chrome用户需要下载SwitchySharp插件，设置socks5代理 ip 127.0.0.1 port 10802 勾选Socks5。
