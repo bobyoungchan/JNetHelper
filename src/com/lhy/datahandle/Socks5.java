@@ -53,14 +53,17 @@ public class Socks5 implements Runnable {
 				visitInGFW(Tools.getTestInGFW());
 				if (!isConn)
 					visitOutGFW();
-				if (!isInDB) {
-					if (!Tools.getArray().contains(host)) {
-						Tools.getArray().add(host);
-						Thread t = new Thread(new IsInGFW(host, port));
-						t.setPriority(Thread.MAX_PRIORITY);
-						t.start();
+				if (isConn) {
+					if (!isInDB) {
+						if (!Tools.getArray().contains(host)) {
+							Tools.getArray().add(host);
+							Thread t = new Thread(new IsInGFW(host, port));
+							t.setPriority(Thread.MAX_PRIORITY);
+							t.start();
+						}
 					}
-				}
+				} else
+					erroPage();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -135,6 +138,19 @@ public class Socks5 implements Runnable {
 		try {
 			ori_os.write(bt);
 			ori_os.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void erroPage() {
+		try {
+			write(Tools.getConnectOK());
+			ori_is.read(new byte[1024]);
+			ori_os.write("<html><center><BR><BR><BR><BR><BR><B>(:&nbsp&nbsp&nbspThanks for you use JNetHelper, but you should connect to the Internet first.&nbsp&nbsp&nbsp:)<BR><BR>-----JNetHelper Version Beta 1.1 </B></center></html>"
+					.getBytes());
+			ori_os.close();
+			ori_is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

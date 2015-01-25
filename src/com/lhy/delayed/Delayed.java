@@ -59,8 +59,9 @@ public class Delayed implements Runnable {
 	private void connect() {
 		try {
 			s = new Socket();
-			s.connect(new InetSocketAddress("104.236.158.110", 10510), 3000);
+			s.setKeepAlive(true);
 			s.setSoTimeout(10000);
+			s.connect(new InetSocketAddress(Tools.getServerIP(), 10510), 3000);
 			is = s.getInputStream();
 			os = s.getOutputStream();
 			Tools.setConnected(true);
@@ -69,7 +70,6 @@ public class Delayed implements Runnable {
 				s.close();
 				Tools.setConnected(false);
 			} catch (IOException e1) {
-				e1.printStackTrace();
 			}
 			Tools.sleep(1000);
 			connect();
